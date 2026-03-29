@@ -122,12 +122,10 @@ type Query {
     lesson(id:ID,slug:String):Lesson
 
     lessons(
-    filters:LessonFiltersInput
-    first:Int
-    after:String
-    last:Int
-    before:String
-    ):LessonConnection!
+  filters: LessonFiltersInput
+  first: Int
+  after: String
+): LessonConnection!
 
     lessonSidebar(courseId:ID!):[Lesson!]! # no pagination - full tree
 }
@@ -137,4 +135,15 @@ type Query {
 
 type Mutation {
     createLesson(input:CreateLessonInput):Lesson!
+    updateLesson(id:ID!,input:UpdateLessonInput!):Lesson!
+    deleteLesson(id:ID!):DeleteLessonPayload!
+    restoreLesson(id:ID!):Lesson!
+    publishLesson(id:ID!):Lesson!  
+    unpublishLesson(id:ID!):Lesson!
+}
+
+type DeleteLessonPayload{
+    success:Boolean!
+    message:String
+    id:ID!
 }

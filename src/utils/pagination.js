@@ -12,21 +12,9 @@ export function decodeCursor(cursor) {
 }
 
 export function parsePaginationArgs(args = {}, maxLimit = 100) {
-  const { first, after, last, before } = args;
-
-  if (last != null || before != null) {
-    const limit = Math.min(last ?? 10, maxLimit);
-    return {
-      direction: "backward",
-      limit,
-      cursor: decodeCursor(before),
-      rawCursor: before ?? null,
-    };
-  }
-
+  const { first, after } = args; //first = limit and after = where to start
   const limit = Math.min(first ?? 10, maxLimit);
   return {
-    direction: "forward",
     limit,
     cursor: decodeCursor(after),
     rawCursor: after ?? null,
@@ -34,26 +22,21 @@ export function parsePaginationArgs(args = {}, maxLimit = 100) {
 }
 
 export function buildMongoosePaginationQuery({
-  direction,
   cursor,
   sortField = "order",
   idField = "_id",
 }) {
-  const sort =
-    direction === "forward"
-      ? { [sortField]: 1, [idField]: 1 }
-      : { [sortField]: -1, [idField]: -1 };
+  const sort = { [sortField]: 1, [idField]: 1 };
 
   if (!cursor) return { sort, filter: {} };
 
   const sortValue = cursor[sortField];
   const idValue = cursor[idField] ?? cursor.id;
-  const gtOp = direction === "forward" ? "$gt" : "$lt";
 
   const filter = {
     $or: [
-      { [sortField]: { [gtOp]: sortValue } },
-      { [sortField]: sortValue, [idField]: { [gtOp]: idValue } },
+      { [sortField]: { $gt: sortValue } },
+      { [sortField]: sortValue, [idField]: { $gt: idValue } },
     ],
   };
 
@@ -63,16 +46,13 @@ export function buildMongoosePaginationQuery({
 export function buildConnection({
   docs,
   limit,
-  direction,
   totalCount,
   sortField = "order",
   idField = "_id",
   mapNode,
 }) {
   const hasMore = docs.length > limit;
-  let slice = hasMore ? docs.slice(0, limit) : docs;
-
-  if (direction === "backward") slice = slice.reverse();
+  const slice = hasMore ? docs.slice(0, limit) : docs;
 
   const defaultMap = (doc) => {
     const obj =
@@ -94,8 +74,8 @@ export function buildConnection({
   return {
     edges,
     pageInfo: {
-      hasNextPage: direction === "forward" ? hasMore : false,
-      hasPreviousPage: direction === "backward" ? hasMore : false,
+      hasNextPage: hasMore,
+      hasPreviousPage: false,
       startCursor: edges[0]?.cursor ?? null,
       endCursor: edges[edges.length - 1]?.cursor ?? null,
     },

@@ -22,7 +22,7 @@ export async function findLesson({ id, slug }) {
     ...(id ? { _id: id } : { slug }),
     isDeleted: false,
   })
-  .populate("course","name")
+  .populate("course","name _id")
   .lean();
 }
 
@@ -32,7 +32,6 @@ export async function findLessons(args = {}) {
   const pagination = parsePaginationArgs(paginationRawArgs);
   const baseFilter = buildLessonFilter(filters);
   const { sort, filter: cursorFilter } = buildMongoosePaginationQuery({
-    direction: pagination.direction,
     cursor: pagination.cursor,
     sortField: "order",
   });
@@ -54,7 +53,6 @@ export async function findLessons(args = {}) {
   return buildConnection({
     docs,
     limit: pagination.limit,
-    direction: pagination.direction,
     totalCount,
     sortField: "order",
   });
@@ -68,4 +66,68 @@ export async function findSidebarLessons(courseId) {
 
 export async function createLesson(data) {
   return new Lesson(data).save();
+}
+
+export async function updateLesson(id, data) {
+  const updated = await Lesson.findOneAndUpdate(
+    { _id: id, isDeleted: false },
+    { $set: data },
+    { new: true, runValidators: true }
+  )
+    .populate("course", "name _id")
+    .lean();
+ 
+  if (!updated) throw new Error("Lesson not found or has been deleted");
+  return updated;
+}
+
+export async function softDeleteLesson(id) {
+  const deleted = await Lesson.findOneAndUpdate(
+    { _id: id, isDeleted: false },
+    { $set: { isDeleted: true } },
+    { new: true }
+  ).lean();
+ 
+  if (!deleted) throw new Error("Lesson not found or already deleted");
+  return deleted;
+}
+
+
+export async function restoreLesson(id) {
+  const restored = await Lesson.findOneAndUpdate(
+    { _id: id, isDeleted: true },
+    { $set: { isDeleted: false } },
+    { new: true }
+  )
+    .populate("course", "name _id")
+    .lean();
+ 
+  if (!restored) throw new Error("Lesson not found or not deleted");
+  return restored;
+}
+ 
+export async function publishLesson(id) {
+  const published = await Lesson.findOneAndUpdate(
+    { _id: id, isDeleted: false },
+    { $set: { isPublished: true, publishedAt: new Date() } },
+    { new: true }
+  )
+    .populate("course", "name _id")
+    .lean();
+ 
+  if (!published) throw new Error("Lesson not found or has been deleted");
+  return published;
+}
+ 
+export async function unpublishLesson(id) {
+  const unpublished = await Lesson.findOneAndUpdate(
+    { _id: id, isDeleted: false },
+    { $set: { isPublished: false, publishedAt: null } },
+    { new: true }
+  )
+    .populate("course", "name _id")
+    .lean();
+ 
+  if (!unpublished) throw new Error("Lesson not found or has been deleted");
+  return unpublished;
 }

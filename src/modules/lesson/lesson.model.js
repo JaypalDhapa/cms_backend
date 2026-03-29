@@ -99,11 +99,18 @@ lessonSchema.index({parentId:1, order:1});
 //     next();
 //   });
 
-lessonSchema.pre("save", async function () {
-    if (this.isPublished && !this.publishedAt) {
-      this.publishedAt = new Date();
+// lessonSchema.pre("save", async function () {
+//     if (this.isPublished && !this.publishedAt) {
+//       this.publishedAt = new Date();
+//     }
+// });
+
+lessonSchema.pre("findOneAndUpdate", function () {
+    const update = this.getUpdate();
+    if (update?.$set?.isPublished === true && !update?.$set?.publishedAt) {
+      update.$set.publishedAt = new Date();
     }
-});
+  });
   
 const Lesson = mongoose.model("Lesson",lessonSchema);
 

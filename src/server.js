@@ -8,18 +8,6 @@ import { resolvers } from "./graphql/resolver.js";
 //connectDB
 connectDB();
 
-// const typeDefs = `
-//     type Query {
-//         greet:String
-//     }
-
-// `;
-
-// const resolvers = {
-//     Query:{
-//         greet: () => "good evening"
-//     }
-// }
 
 const Server = new ApolloServer({
     typeDefs,

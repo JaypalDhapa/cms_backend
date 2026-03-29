@@ -23,6 +23,11 @@ import {
   getLessons,
   getSidebarLessons,
   createLessonService,
+  updateLessonService,
+  deleteLessonService,
+  restoreLessonService,
+  publishLessonService,
+  unpublishLessonService,
 } from "./lesson.service.js";
 
 const lessonResolver = {
@@ -34,7 +39,20 @@ const lessonResolver = {
 
   Mutation: {
     createLesson: (_parent, { input }) => createLessonService(input),
+    updateLesson:(_parent,{id,input}) => updateLessonService(id,input),
+    deleteLesson:(_parent, {id}) => deleteLessonService(id),
+    restoreLesson: (_parent, { id }) => restoreLessonService(id),
+    publishLesson: (_parent, { id }) => publishLessonService(id),
+    unpublishLesson: (_parent, { id }) => unpublishLessonService(id),
   },
+
+  Lesson: {
+    id: (parent) => parent._id?.toString() ?? parent.id,
+  },
+
+  LessonCourse:{
+    id:(parent) => parent._id?.toString() ?? parent.id,
+  }
 };
 
 export default lessonResolver;
