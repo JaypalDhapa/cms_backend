@@ -1,0 +1,18 @@
+type Course {
+  id: ID!
+  name: String!
+  slug: String!
+  description: String
+  icon: String
+  order: Int
+  isPublished: Boolean!
+  lessonCount: Int
+
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  Course: [Course!]!
+  Course(slug: String!): Course
+}
