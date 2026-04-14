@@ -2,8 +2,6 @@ type Course {
   id: ID!
   name: String!
   slug: String!
-  description: String
-  icon: String
   order: Int
   isPublished: Boolean!
   isDeleted: Boolean!
@@ -16,8 +14,6 @@ type Course {
 input CreateCourseInput {
   name: String!
   slug: String!
-  description: String
-  icon: String
   order: Int
   isPublished: Boolean
 }
@@ -25,8 +21,6 @@ input CreateCourseInput {
 input UpdateCourseInput {
   name: String
   slug: String
-  description: String
-  icon: String
   order: Int
   isPublished: Boolean
 }
@@ -65,7 +59,7 @@ type Query {
 type Mutation {
   createCourse(input: CreateCourseInput!): Course!
   updateCourse(id: ID!, input: UpdateCourseInput!): Course!
- deleteCourse(id: ID!): DeleteCoursePayload!
+  deleteCourse(id: ID!): DeleteCoursePayload!
   restoreCourse(id: ID!): Course!
 }
 

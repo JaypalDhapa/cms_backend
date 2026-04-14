@@ -1,21 +1,9 @@
 import "dotenv/config";
-import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
-import connectDB from "./config/connectDB.js";
-import { typeDefs } from "./graphql/schema.js";
-import { resolvers } from "./graphql/resolver.js";
 
-//connectDB
-connectDB();
+import app from './app.js';
 
+const PORT = process.env.PORT || 5000;
 
-const Server = new ApolloServer({
-    typeDefs,
-    resolvers
+app.listen(PORT,()=>{
+    console.log(`server running on ${PORT}`);
 })
-
-const {url} = await startStandaloneServer(Server,{
-    listen:{port:4000}
-})
-
-console.log(url)

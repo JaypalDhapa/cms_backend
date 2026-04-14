@@ -22,6 +22,7 @@ import {
   getLesson,
   getLessons,
   getSidebarLessons,
+  getRecentLessons,
   createLessonService,
   updateLessonService,
   deleteLessonService,
@@ -34,6 +35,7 @@ const lessonResolver = {
   Query: {
     lesson: (_parent, { id, slug }) => getLesson({ id, slug }),
     lessons: (_parent, args) => getLessons(args),
+    recentLessons: (_parent, { limit }) => getRecentLessons(limit),
     lessonSidebar: (_parent, { courseId }) => getSidebarLessons(courseId),
   },
 

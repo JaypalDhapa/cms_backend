@@ -3,147 +3,140 @@ scalar Date
 # enums for lessontype
 
 enum LessonType {
-    single
-    group
+  single
+  grouped
 }
 
 type LessonMeta {
-    title:String!
-    description:String!
-    keywords:[String]!
+  title: String!
+  description: String!
+  keywords: [String]!
 }
 
 type LessonCourse {
-    id:ID!
-    name:String
+  id: ID!
+  name: String
 }
 
-type Lesson{
-    id:ID!
-    title:String!
-    slug:String!
-    fullSlug:String!
-    description:String
-    course:LessonCourse!
-    type:LessonType!
-    parentId:ID
-    order:Int!
-    content:String!
-    isPublished:Boolean!
-    publishedAt:Date
-    isDeleted:Boolean!
-    meta:LessonMeta!
-    createdAt:Date!
-    updatedAt:Date!
+type Lesson {
+  id: ID!
+  title: String!
+  slug: String!
+  fullSlug: String!
+  description: String
+  course: LessonCourse!
+  type: LessonType!
+  parentId: ID
+  order: Int!
+  content: String!
+  isPublished: Boolean!
+  publishedAt: Date
+  isDeleted: Boolean!
+  meta: LessonMeta!
+  createdAt: Date!
+  updatedAt: Date!
 }
-
-
 
 # input Types
 
 input LessonMetaInput {
-    title:String!
-    description:String!
-    keywords:[String!]
+  title: String!
+  description: String!
+  keywords: [String!]
 }
 
-input LessonCourseInput{
-    id:ID!
-    name:String
+input LessonCourseInput {
+  id: ID!
+  name: String
 }
 
-
-
-input CreateLessonInput{
-    title:String!
-    slug:String!
-    fullSlug:String!
-    description:String
-    course:LessonCourseInput!
-    type:LessonType
-    parentId:ID
-    order:Int
-    content:String!
-    isPublished:Boolean
-    meta:LessonMetaInput!
+input CreateLessonInput {
+  title: String!
+  slug: String!
+  fullSlug: String!
+  description: String
+  course: ID!
+  type: LessonType
+  parentId: ID
+  order: Int
+  content: String
+  isPublished: Boolean
+  meta: LessonMetaInput!
 }
 
 input UpdateLessonInput {
-    title:String
-    slug:String
-    fullSlug:String
-    description:String
-    type:LessonType
-    parentId:ID
-    order:Int
-    content:String
-    isPublished:Boolean
-    meta:LessonMetaInput
+  title: String
+  slug: String
+  fullSlug: String
+  description: String
+  course:ID!
+  type: LessonType
+  parentId: ID
+  order: Int
+  content: String
+  isPublished: Boolean
+  meta: LessonMetaInput
 }
-
-
 
 # filter and pagination
 
 input LessonFiltersInput {
-    courseId:ID
-    isPublished:Boolean
-    isDeleted:Boolean
-    parentId:ID
-    type:LessonType
-    
+  courseId: ID
+  isPublished: Boolean
+  isDeleted: Boolean
+  parentId: ID
+  type: LessonType
 }
-
 
 # cursor pagination Types
 
 type PageInfo {
-    hasNextPage:Boolean!
-    hasPreviousPage:Boolean!
-    startCursor:String
-    endCursor:String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
 }
 
-type LessonEdge{
-    cursor:String!
-    node:Lesson!
+type LessonEdge {
+  cursor: String!
+  node: Lesson!
 }
 
 type LessonConnection {
-    edges: [LessonEdge!]
-    pageInfo:PageInfo!
-    totalCount:Int!
+  edges: [LessonEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int!
+  published: Int!
+  draft: Int!
 }
-
-
-
 
 type Query {
-    lesson(id:ID,slug:String):Lesson
+  lesson(id: ID, slug: String): Lesson
 
-    lessons(
-  filters: LessonFiltersInput
-  first: Int
-  after: String
-): LessonConnection!
+  lessons(
+    filters: LessonFiltersInput
+    first: Int
+    after: String
+  ): LessonConnection!
 
-    lessonSidebar(courseId:ID!):[Lesson!]! # no pagination - full tree
+  recentLessons(limit:Int):[Lesson!]!
+
+  lessonSidebar(courseId: ID!): [Lesson!]! # no pagination - full tree
 }
-
 
 # Mutations
 
 type Mutation {
-    createLesson(input:CreateLessonInput):Lesson!
-    updateLesson(id:ID!,input:UpdateLessonInput!):Lesson!
-    deleteLesson(id:ID!):DeleteLessonPayload!
-    restoreLesson(id:ID!):Lesson!
-    publishLesson(id:ID!):Lesson!  
-    unpublishLesson(id:ID!):Lesson!
+  createLesson(input: CreateLessonInput): Lesson!
+  updateLesson(id: ID!, input: UpdateLessonInput!): Lesson!
+  deleteLesson(id: ID!): DeleteLessonPayload!
+  restoreLesson(id: ID!): Lesson!
+  publishLesson(id: ID!): Lesson!
+  unpublishLesson(id: ID!): Lesson!
 }
 
-type DeleteLessonPayload{
-    success:Boolean!
-    message:String
-    id:ID!
+type DeleteLessonPayload {
+  success: Boolean!
+  message: String
+  id: ID!
 }

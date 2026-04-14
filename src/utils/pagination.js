@@ -47,6 +47,8 @@ export function buildConnection({
   docs,
   limit,
   totalCount,
+  published,
+  draft,
   sortField = "order",
   idField = "_id",
   mapNode,
@@ -80,5 +82,7 @@ export function buildConnection({
       endCursor: edges[edges.length - 1]?.cursor ?? null,
     },
     totalCount,
+    published,
+    draft,
   };
 }

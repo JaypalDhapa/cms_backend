@@ -28,7 +28,7 @@ const lessonSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ["single", "group"],
+        enum: ["single", "grouped"],
         default: "single"
     },
     parentId:{
@@ -38,12 +38,10 @@ const lessonSchema = new mongoose.Schema({
     },
     order:{
         type:Number,
-        default:0,
-        min:0
     },
     content:{
         type:String,
-        required:true,
+        
     },
     isPublished:{
         type:Boolean,

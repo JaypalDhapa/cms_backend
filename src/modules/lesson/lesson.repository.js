@@ -41,19 +41,23 @@ export async function findLessons(args = {}) {
     ...(Object.keys(cursorFilter).length ? cursorFilter : {}),
   };
 
-  const [docs, totalCount] = await Promise.all([
+  const [docs, totalCount,published,draft] = await Promise.all([
     Lesson.find(finalFilter)
       .sort(sort)
       .limit(pagination.limit + 1)
       .populate("course","name")
       .lean(),
     Lesson.countDocuments(baseFilter),
+    Lesson.countDocuments({ ...baseFilter, isPublished: true }),
+  Lesson.countDocuments({ ...baseFilter, isPublished: false }),
   ]);
 
   return buildConnection({
     docs,
     limit: pagination.limit,
     totalCount,
+    published,
+    draft,
     sortField: "order",
   });
 }
@@ -130,4 +134,13 @@ export async function unpublishLesson(id) {
  
   if (!unpublished) throw new Error("Lesson not found or has been deleted");
   return unpublished;
+}
+
+
+export async function findRecentLessons(limit = 5) {
+  return Lesson.find({ isDeleted: false })
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .populate("course", "name")
+    .lean();
 }
