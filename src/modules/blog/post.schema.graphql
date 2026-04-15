@@ -1,0 +1,147 @@
+scalar Date
+scalar DateTime
+
+enum PostSortField {
+  CREATED_AT
+  UPDATED_AT
+  TITLE
+  PUBLISHED_AT
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+type PostMeta {
+  title: String!
+  description: String!
+  keywords: [String!]!
+}
+
+type PostEngagement {
+  likeCount: Int!
+  dislikeCount: Int!
+  commentCount: Int!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  slug: String!
+  fullSlug: String
+  excerpt: String
+  content: String!
+  coverImage: String!
+  coverImageAlt: String
+  readTime: Int!
+  isPublished: Boolean!
+  publishedAt: Date
+  isDeleted: Boolean!
+  isPinned: Boolean!
+  allowComments: Boolean!
+  tags: [String!]!
+  engagement: PostEngagement!
+  meta: PostMeta!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+# Pagination
+
+type PostEdge {
+  cursor: String!
+  node: Post!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type PostConnection {
+  edges: [PostEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# Inputs
+
+input PostMetaInput {
+  title: String!
+  description: String!
+  keywords: [String!]
+}
+
+input CreatePostInput {
+  title: String!
+  slug: String!
+  fullSlug: String
+  excerpt: String
+  content: String!
+  coverImage: String!
+  coverImageAlt: String
+  tags: [String!]
+  allowComments: Boolean
+  isPinned: Boolean
+  isPublished: Boolean
+  meta: PostMetaInput!
+}
+
+# update
+
+input UpdatePostInput {
+  title: String
+  slug: String
+  fullSlug: String
+  excerpt: String
+  content: String
+  coverImage: String
+  coverImageAlt: String
+  tags: [String!]
+  allowComments: Boolean
+  isPinned: Boolean
+  isPublished: Boolean
+  meta: PostMetaInput
+}
+
+# filter
+
+input PostFilterInput {
+  isPublished: Boolean
+  isPinned: Boolean
+  tags: [String]
+  search: String
+}
+
+input PostPaginationInput {
+  first: Int
+  after: String
+  sortBy: PostSortField
+  order: SortOrder
+}
+
+# Queries
+
+type Query {
+  post(id: ID, slug: String): Post
+  posts(
+    filter: PostFilterInput
+    pagination: PostPaginationInput
+  ): PostConnection!
+  pinnedPosts: [Post!]!
+}
+
+# Mutations
+
+type Mutation {
+  createPost(input: CreatePostInput!): Post!
+  updatePost(id: ID!, input: UpdatePostInput!): Post!
+  deletePost(id: ID!): Boolean!
+  publishPost(id: ID!): Post!
+  unpublishPost(id: ID!): Post!
+  pinPost(id: ID!): Post!
+  unpinPost(id: ID!): Post!
+}

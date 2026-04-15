@@ -1,0 +1,74 @@
+scalar DateTime
+
+type CommentEngagement {
+  likeCount: Int!
+  dislikeCount: Int!
+  replyCount: Int!
+}
+
+type Comment {
+  id: ID!
+  postId: ID!
+  content: String!
+  parentId: ID
+  rootId: ID
+  depth: Int!
+  engagement: CommentEngagement!
+  isDeleted: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type CommentEdge {
+  cursor: String!
+  node: Comment!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type CommentConnection {
+  edges: [CommentEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+
+input CreateCommentInput {
+  postId: ID!
+  content: String!
+  parentId: ID
+}
+
+input UpdateCommentInput {
+  content: String
+}
+
+input CommentFilterInput {
+  postId: ID!
+  parentId: ID
+  rootId: ID
+}
+
+input CommentPaginationInput {
+  first: Int
+  after: String
+}
+
+type Query {
+  comments(
+    filter: CommentFilterInput!
+    pagination: CommentPaginationInput
+  ): CommentConnection!
+}
+
+type Mutation {
+  createComment(input: CreateCommentInput!): Comment!
+  updateComment(id: ID!, input: UpdateCommentInput!): Comment!
+  deleteComment(id: ID!): Boolean!
+}

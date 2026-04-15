@@ -1,0 +1,41 @@
+scalar DateTime
+
+enum ReactionType {
+  LIKE
+  DISLIKE
+}
+
+#  Main Type
+type CommentReaction {
+  id: ID!
+  commentId: ID!
+  comment: Comment
+  type: ReactionType!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+
+# Payload
+type CommentReactionPayload {
+  reaction: CommentReaction
+  action: String!
+  engagement: CommentEngagement!
+}
+
+# Inputs
+input ReactToCommentInput {
+  commentId: ID!
+  type: ReactionType!
+}
+
+#  Queries
+extend type Query {
+  myReactionOnComment(commentId: ID!): CommentReaction
+}
+
+#  Mutations
+extend type Mutation {
+  reactToComment(input: ReactToCommentInput!): CommentReactionPayload!
+  removeReactionFromComment(commentId: ID!): Boolean!
+}

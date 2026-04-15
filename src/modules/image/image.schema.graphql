@@ -1,0 +1,73 @@
+scalar Date
+type Course {
+  id: ID!
+  name: String!
+}
+
+type Lesson{
+    id:ID!
+    title:String
+}
+
+type Image{
+    id:ID!
+    imageUrl:String!
+    imageAlt:String
+      courseId: ID
+  lessonId: ID
+    course:Course
+    lesson:Lesson
+    publicId:String
+    createdAt: Date
+  updatedAt: Date
+}
+
+input ImageFiltersInput {
+
+courseId:ID
+lessonId:ID
+isDeleted:Boolean
+}
+
+# Pagination
+type ImageEdge{
+cursor:String!
+node:Image!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type ImageConnection {
+edges:[ImageEdge!]
+pageInfo:PageInfo!
+totalCount:Int!
+}
+
+input ImagePaginationInput{
+  first:Int
+  after:String
+}
+
+type Query {
+  image(id: ID!): Image
+
+  images(
+    filters: ImageFiltersInput
+    pagination:ImagePaginationInput
+  ): ImageConnection!
+}
+
+type Mutation {
+deleteImage(id:ID!):DeleteImagePayload!
+}
+
+type DeleteImagePayload {
+  success: Boolean!
+  message: String
+  id: ID!
+}

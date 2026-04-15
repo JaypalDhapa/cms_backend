@@ -1,0 +1,35 @@
+scalar DateTime
+
+enum ReactionType {
+  LIKE
+  DISLIKE
+}
+
+type Reaction {
+  id: ID!
+  postId: ID!
+  post: Post
+  type: ReactionType!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type ReactionPayload {
+  reaction: Reaction
+  action: String!
+  engagement: PostEngagement!
+}
+
+input ReactToPostInput {
+  postId: ID!
+  type: ReactionType!
+}
+
+extend type Query {
+  myReactionOnPost(postId: ID!): Reaction
+}
+
+extend type Mutation {
+  reactToPost(input: ReactToPostInput!): ReactionPayload!
+  removeReactionFromPost(postId: ID!): Boolean!
+}
