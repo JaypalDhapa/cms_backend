@@ -1,4 +1,5 @@
 import Image from "../../models/Image.js";
+import { Types } from "mongoose";
 
 import { decodeCursor, buildConnection} from '../../utils/blogPagination.js'
 
@@ -42,7 +43,9 @@ export async function findImage({ id }) {
 //   find images 
 
 export async function findImages(args = {}) {
-    const { filter: filters = {}, pagination = {} } = args;
+    // const { filter: filters = {}, pagination = {} } = args;
+    const { filters = {}, pagination = {} } = args;
+ 
   
     const limit = Math.min(pagination.first || 10, 50);
   
@@ -55,6 +58,7 @@ export async function findImages(args = {}) {
       finalFilter._id = { $gt: new Types.ObjectId(id) };
     }
   
+    console.log(finalFilter)
     const [docs, totalCount] = await Promise.all([
       Image.find(finalFilter)
         .sort({ _id: 1 })

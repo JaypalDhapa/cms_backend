@@ -1,47 +1,36 @@
-// src/modules/course/course.repository.js
-// CHANGED:
-//   1. buildCourseFilter — added categoryId filter
-//   2. findCourses — populates category field
-//   3. findCourse — populates category field
-//   4. updateCourse — populates category field
-//   5. All reads populate category for frontend display
+// src/modules/category/category.repository.js
 
-import Course from './course.model.js';
-import Section from '../section/section.model.js';
-import Lesson from '../lesson/lesson.model.js';
+import Category from './category.model.js';
+import Course from '../course/course.model.js';
 import {
   parsePaginationArgs,
   buildMongoosePaginationQuery,
   buildConnection,
 } from '../../utils/pagination.js';
 
-function buildCourseFilter(filters = {}) {
+function buildCategoryFilter(filters = {}) {
   const filter = { isDeleted: filters.isDeleted ?? false };
   if (filters.isPublished != null) filter.isPublished = filters.isPublished;
-  // Filter by category — when categoryId provided, scope to that category
-  if (filters.categoryId != null) filter.category = filters.categoryId;
   return filter;
 }
 
 // ── GET ONE ───────────────────────────────────────────────────────────────────
 
-export async function findCourse({ id, slug }) {
+export async function findCategory({ id, slug }) {
   if (!id && !slug) throw new Error('Provide id or slug');
-  return Course.findOne({
+  return Category.findOne({
     ...(id ? { _id: id } : { slug }),
     isDeleted: false,
-  })
-    .populate('category', 'name _id')
-    .lean();
+  }).lean();
 }
 
 // ── GET MANY (cursor-paginated) ───────────────────────────────────────────────
 
-export async function findCourses(args = {}) {
+export async function findCategories(args = {}) {
   const { filters = {}, ...paginationRawArgs } = args;
 
   const pagination = parsePaginationArgs(paginationRawArgs);
-  const baseFilter = buildCourseFilter(filters);
+  const baseFilter = buildCategoryFilter(filters);
   const { sort, filter: cursorFilter } = buildMongoosePaginationQuery({
     cursor: pagination.cursor,
     sortField: 'order',
@@ -53,12 +42,11 @@ export async function findCourses(args = {}) {
   };
 
   const [docs, totalCount] = await Promise.all([
-    Course.find(finalFilter)
+    Category.find(finalFilter)
       .sort(sort)
       .limit(pagination.limit + 1)
-      .populate('category', 'name _id')
       .lean(),
-    Course.countDocuments(baseFilter),
+    Category.countDocuments(baseFilter),
   ]);
 
   return buildConnection({
@@ -71,28 +59,25 @@ export async function findCourses(args = {}) {
 
 // ── CREATE ────────────────────────────────────────────────────────────────────
 
-export async function createCourse(data) {
-  const doc = await new Course(data).save();
-  return Course.findById(doc._id).populate('category', 'name _id').lean();
+export async function createCategory(data) {
+  return new Category(data).save();
 }
 
 // ── UPDATE ────────────────────────────────────────────────────────────────────
 
-export async function updateCourse(id, data) {
-  const updated = await Course.findOneAndUpdate(
+export async function updateCategory(id, data) {
+  const updated = await Category.findOneAndUpdate(
     { _id: id, isDeleted: false },
     { $set: data },
     { new: true, runValidators: true }
-  )
-    .populate('category', 'name _id')
-    .lean();
+  ).lean();
   return updated;
 }
 
 // ── SOFT DELETE ───────────────────────────────────────────────────────────────
 
-export async function softDeleteCourse(id) {
-  const result = await Course.findOneAndUpdate(
+export async function softDeleteCategory(id) {
+  const result = await Category.findOneAndUpdate(
     { _id: id, isDeleted: false },
     { $set: { isDeleted: true } }
   );
@@ -101,29 +86,18 @@ export async function softDeleteCourse(id) {
 
 // ── RESTORE ───────────────────────────────────────────────────────────────────
 
-export async function restoreCourse(id) {
-  const restored = await Course.findOneAndUpdate(
+export async function restoreCategory(id) {
+  const restored = await Category.findOneAndUpdate(
     { _id: id, isDeleted: true },
     { $set: { isDeleted: false } },
     { new: true }
-  )
-    .populate('category', 'name _id')
-    .lean();
-  if (!restored) throw new Error('Course not found or not deleted');
+  ).lean();
+  if (!restored) throw new Error('Category not found or not deleted');
   return restored;
 }
 
-// ── CHILD COUNTS (for delete safety and resolver fields) ──────────────────────
+// ── CHILD COUNT (for delete safety) ──────────────────────────────────────────
 
-export async function countSectionsInCourse(courseId) {
-  return Section.countDocuments({ course: courseId, isDeleted: false });
-}
-
-export async function countRootLessonsInCourse(courseId) {
-  // Root level lessons = lessons with section: null under this course
-  return Lesson.countDocuments({
-    course: courseId,
-    section: null,
-    isDeleted: false,
-  });
+export async function countCoursesInCategory(categoryId) {
+  return Course.countDocuments({ category: categoryId, isDeleted: false });
 }

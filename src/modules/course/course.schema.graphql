@@ -1,10 +1,27 @@
+# src/modules/course/course.schema.graphql
+# CHANGED:
+#   1. order: Int → String (fractional index)
+#   2. Added category field to Course type
+#   3. Added categoryId to CreateCourseInput and UpdateCourseInput
+#   4. Added categoryId to CourseFiltersInput
+#   5. Added sectionCount and lessonCount to Course type
+#   6. Added CourseCategory sub-type
+
+type CourseCategory {
+  id: ID!
+  name: String
+}
+
 type Course {
   id: ID!
   name: String!
   slug: String!
-  order: Int
+  order: String!
+  category: CourseCategory
   isPublished: Boolean!
   isDeleted: Boolean!
+  sectionCount: Int!
+  lessonCount: Int!
   createdAt: String
   updatedAt: String
 }
@@ -14,23 +31,26 @@ type Course {
 input CreateCourseInput {
   name: String!
   slug: String!
-  order: Int
+  categoryId: ID
+  order: String
   isPublished: Boolean
 }
 
 input UpdateCourseInput {
   name: String
   slug: String
-  order: Int
+  categoryId: ID
+  order: String
   isPublished: Boolean
 }
 
 input CourseFiltersInput {
+  categoryId: ID
   isPublished: Boolean
   isDeleted: Boolean
 }
 
-# --- Pagination types (reused pattern from lessons) ---
+# --- Pagination ---
 
 type CourseEdge {
   cursor: String!
@@ -38,7 +58,7 @@ type CourseEdge {
 }
 
 type CourseConnection {
-  edges: [CourseEdge!]
+  edges: [CourseEdge!]!
   pageInfo: PageInfo!
   totalCount: Int!
 }

@@ -18,7 +18,7 @@ export const decodeCompositeCursor = (cursor) => {
   return JSON.parse(decoded.slice(7));
 };
 
-export const buildConnection = (docs, limit) => {
+export const buildConnection = (docs, limit,totalCount=0) => {
   const hasNextPage = docs.length > limit;
   const edges = docs.slice(0, limit);
 
@@ -27,6 +27,7 @@ export const buildConnection = (docs, limit) => {
       cursor: encodeCursor(doc._id.toString()),
       node: doc,
     })),
+    totalCount:Number(totalCount) || 0,
     pageInfo: {
       hasNextPage,
       hasPreviousPage: false,

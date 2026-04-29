@@ -1,0 +1,73 @@
+# src/modules/category/category.schema.graphql
+
+type Category {
+  id: ID!
+  name: String!
+  slug: String!
+  order: String!
+  isPublished: Boolean!
+  isDeleted: Boolean!
+  courseCount: Int!
+  createdAt: String
+  updatedAt: String
+}
+
+# --- Inputs ---
+
+input CreateCategoryInput {
+  name: String!
+  slug: String!
+  order: String
+  isPublished: Boolean
+}
+
+input UpdateCategoryInput {
+  name: String
+  slug: String
+  order: String
+  isPublished: Boolean
+}
+
+input CategoryFiltersInput {
+  isPublished: Boolean
+  isDeleted: Boolean
+}
+
+# --- Pagination ---
+
+type CategoryEdge {
+  cursor: String!
+  node: Category!
+}
+
+type CategoryConnection {
+  edges: [CategoryEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# --- Queries ---
+
+type Query {
+  category(id: ID, slug: String): Category
+  categories(
+    filters: CategoryFiltersInput
+    first: Int
+    after: String
+  ): CategoryConnection!
+}
+
+# --- Mutations ---
+
+type Mutation {
+  createCategory(input: CreateCategoryInput!): Category!
+  updateCategory(id: ID!, input: UpdateCategoryInput!): Category!
+  deleteCategory(id: ID!): DeleteCategoryPayload!
+  restoreCategory(id: ID!): Category!
+}
+
+type DeleteCategoryPayload {
+  success: Boolean!
+  message: String!
+  id: ID!
+}

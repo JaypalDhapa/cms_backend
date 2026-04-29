@@ -1,22 +1,8 @@
-/*
-import * as lessonServices from './lesson.service.js';
-import data from '../../data/db.js'
-
-const lessonResolver = {
-    Query:{
-        lessons: (parent,args) =>lessonServices.getLessons(args),
-        // lesson: (parent,args) => lessonServices.getLessons(args)
-    },
-
-    // Mutation:{
-    //     createLesson: (_,args) =>{
-    //         console.log(args)
-    //         return lessonServices.createLesson(args);
-    //     }
-    // }
-}
-*/
-// export default lessonResolver
+// src/modules/lesson/lesson.resolver.js
+// CHANGED:
+//   1. Added LessonSection sub-resolver for id mapping
+//   2. lessonSidebar resolver now returns SidebarData type (sections + rootLessons)
+//   3. All other resolvers unchanged
 
 import {
   getLesson,
@@ -29,7 +15,7 @@ import {
   restoreLessonService,
   publishLessonService,
   unpublishLessonService,
-} from "./lesson.service.js";
+} from './lesson.service.js';
 
 const lessonResolver = {
   Query: {
@@ -41,8 +27,8 @@ const lessonResolver = {
 
   Mutation: {
     createLesson: (_parent, { input }) => createLessonService(input),
-    updateLesson:(_parent,{id,input}) => updateLessonService(id,input),
-    deleteLesson:(_parent, {id}) => deleteLessonService(id),
+    updateLesson: (_parent, { id, input }) => updateLessonService(id, input),
+    deleteLesson: (_parent, { id }) => deleteLessonService(id),
     restoreLesson: (_parent, { id }) => restoreLessonService(id),
     publishLesson: (_parent, { id }) => publishLessonService(id),
     unpublishLesson: (_parent, { id }) => unpublishLessonService(id),
@@ -52,10 +38,23 @@ const lessonResolver = {
     id: (parent) => parent._id?.toString() ?? parent.id,
   },
 
-  LessonCourse:{
-    id:(parent) => parent._id?.toString() ?? parent.id,
-  }
+  LessonCourse: {
+    id: (parent) => parent._id?.toString() ?? parent.id,
+  },
+
+  // New — resolves the section sub-object on a Lesson
+  LessonSection: {
+    id: (parent) => parent._id?.toString() ?? parent.id,
+  },
+
+  // New — resolves sidebar section items (sections with nested lessons)
+  SidebarSection: {
+    id: (parent) => parent._id?.toString() ?? parent.id,
+  },
+
+  SidebarLesson: {
+    id: (parent) => parent._id?.toString() ?? parent.id,
+  },
 };
 
 export default lessonResolver;
-

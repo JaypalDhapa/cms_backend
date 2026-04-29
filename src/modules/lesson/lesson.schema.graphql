@@ -1,11 +1,24 @@
+# src/modules/lesson/lesson.schema.graphql
+# CHANGED:
+#   1. order: Int → String (fractional index)
+#   2. Added section field to Lesson type (nullable — null = root level)
+#   3. Added LessonSection sub-type
+#   4. Added sectionId to LessonFiltersInput
+#   5. Added section to CreateLessonInput and UpdateLessonInput
+#   6. Removed parentId from all types (replaced by section)
+#   7. lessonSidebar now returns SidebarData (sections + rootLessons)
+#   8. Added SidebarSection, SidebarLesson, SidebarData types
+
 scalar Date
 
-# enums for lessontype
+# ── Enums ─────────────────────────────────────────────────────────────────────
 
 enum LessonType {
   single
   grouped
 }
+
+# ── Sub-types ─────────────────────────────────────────────────────────────────
 
 type LessonMeta {
   title: String!
@@ -18,26 +31,59 @@ type LessonCourse {
   name: String
 }
 
+# New — the section a lesson belongs to (null = root level)
+type LessonSection {
+  id: ID!
+  name: String
+}
+
+# ── Main type ─────────────────────────────────────────────────────────────────
+
 type Lesson {
   id: ID!
   title: String!
   slug: String!
-  fullSlug: String!
+  fullSlug: String
   description: String
-  course: LessonCourse!
+  course: Course!
+  section: Section           # null = root level under course
   type: LessonType!
-  parentId: ID
-  order: Int!
-  content: String!
+  order: String!                   # fractional index string
+  content: String
   isPublished: Boolean!
   publishedAt: Date
   isDeleted: Boolean!
   meta: LessonMeta!
-  createdAt: Date!
-  updatedAt: Date!
+  createdAt: Date
+  updatedAt: Date
 }
 
-# input Types
+# ── Sidebar types (returned by lessonSidebar query) ───────────────────────────
+
+type SidebarLesson {
+  id: ID!
+  title: String!
+  slug: String!
+  fullSlug: String
+  order: String!
+  type: LessonType!
+  isPublished: Boolean!
+}
+
+type SidebarSection {
+  id: ID!
+  name: String!
+  slug: String!
+  order: String!
+  lessons: [SidebarLesson!]!
+}
+
+type SidebarData {
+  sections: [SidebarSection!]!
+  rootLessons: [SidebarLesson!]!
+}
+
+# ── Input types ───────────────────────────────────────────────────────────────
 
 input LessonMetaInput {
   title: String!
@@ -45,20 +91,15 @@ input LessonMetaInput {
   keywords: [String!]
 }
 
-input LessonCourseInput {
-  id: ID!
-  name: String
-}
-
 input CreateLessonInput {
   title: String!
   slug: String!
-  fullSlug: String!
+  fullSlug: String
   description: String
   course: ID!
+  section: ID              # null = root level, omit or pass null
   type: LessonType
-  parentId: ID
-  order: Int
+  order: String            # fractional index string
   content: String
   isPublished: Boolean
   meta: LessonMetaInput!
@@ -69,26 +110,24 @@ input UpdateLessonInput {
   slug: String
   fullSlug: String
   description: String
-  course:ID!
+  course: ID
+  section: ID              # pass null to move lesson to root level
   type: LessonType
-  parentId: ID
-  order: Int
+  order: String            # fractional index string
   content: String
   isPublished: Boolean
   meta: LessonMetaInput
 }
 
-# filter and pagination
+# ── Filters & pagination ──────────────────────────────────────────────────────
 
 input LessonFiltersInput {
   courseId: ID
+  sectionId: ID            # pass null to get root-level lessons only
   isPublished: Boolean
   isDeleted: Boolean
-  parentId: ID
   type: LessonType
 }
-
-# cursor pagination Types
 
 type PageInfo {
   hasNextPage: Boolean!
@@ -110,6 +149,8 @@ type LessonConnection {
   draft: Int!
 }
 
+# ── Queries ───────────────────────────────────────────────────────────────────
+
 type Query {
   lesson(id: ID, slug: String): Lesson
 
@@ -119,12 +160,13 @@ type Query {
     after: String
   ): LessonConnection!
 
-  recentLessons(limit:Int):[Lesson!]!
+  recentLessons(limit: Int): [Lesson!]!
 
-  lessonSidebar(courseId: ID!): [Lesson!]! # no pagination - full tree
+  # Returns full sidebar tree — sections with their lessons + root level lessons
+  lessonSidebar(courseId: ID!): SidebarData!
 }
 
-# Mutations
+# ── Mutations ─────────────────────────────────────────────────────────────────
 
 type Mutation {
   createLesson(input: CreateLessonInput): Lesson!

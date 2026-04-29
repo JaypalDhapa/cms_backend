@@ -1,0 +1,81 @@
+# src/modules/section/section.schema.graphql
+
+type SectionCourse {
+  id: ID!
+  name: String
+}
+
+type Section {
+  id: ID!
+  name: String!
+  slug: String!
+  order: String!
+  course: SectionCourse!
+  isPublished: Boolean!
+  isDeleted: Boolean!
+  lessonCount: Int!
+  createdAt: String
+  updatedAt: String
+}
+
+# --- Inputs ---
+
+input CreateSectionInput {
+  name: String!
+  slug: String!
+  courseId: ID!
+  order: String
+  isPublished: Boolean
+}
+
+input UpdateSectionInput {
+  name: String
+  slug: String
+  order: String
+  isPublished: Boolean
+}
+
+input SectionFiltersInput {
+  courseId: ID
+  isPublished: Boolean
+  isDeleted: Boolean
+}
+
+# --- Pagination ---
+
+type SectionEdge {
+  cursor: String!
+  node: Section!
+}
+
+type SectionConnection {
+  edges: [SectionEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# --- Queries ---
+
+type Query {
+  section(id: ID!): Section
+  sections(
+    filters: SectionFiltersInput
+    first: Int
+    after: String
+  ): SectionConnection!
+}
+
+# --- Mutations ---
+
+type Mutation {
+  createSection(input: CreateSectionInput!): Section!
+  updateSection(id: ID!, input: UpdateSectionInput!): Section!
+  deleteSection(id: ID!): DeleteSectionPayload!
+  restoreSection(id: ID!): Section!
+}
+
+type DeleteSectionPayload {
+  success: Boolean!
+  message: String!
+  id: ID!
+}
