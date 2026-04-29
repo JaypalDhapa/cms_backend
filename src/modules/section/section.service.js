@@ -22,10 +22,8 @@ export async function getSections(args) {
 
 export async function createSectionService(input) {
   try {
-    const payload = {
-      ...input,
-      course:input.courseId,
-    }
+    const { courseId, ...rest } = input;
+    const payload = { ...rest, course: courseId };
 
     return await createSection(payload);
   } catch (err) {

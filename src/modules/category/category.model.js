@@ -26,19 +26,18 @@ const categorySchema = new mongoose.Schema(
     isPublished: {
       type: Boolean,
       default: false,
-      index: true,
+  
     },
     isDeleted: {
       type: Boolean,
       default: false,
-      index: true,
+  
     },
   },
   { timestamps: true }
 );
 
 categorySchema.index({ isDeleted: 1, order: 1 });
-categorySchema.index({ slug: 1 }, { unique: true });
 
 const Category = mongoose.model('Category', categorySchema);
 export default Category;

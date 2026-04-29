@@ -64,7 +64,7 @@ export async function createLessonService(input) {
     },
   };
 
-  console.log(payload)
+ 
 
   try {
     return await createLesson(payload);

@@ -94,7 +94,6 @@ input LessonMetaInput {
 input CreateLessonInput {
   title: String!
   slug: String!
-  fullSlug: String
   description: String
   course: ID!
   section: ID              # null = root level, omit or pass null
@@ -108,7 +107,6 @@ input CreateLessonInput {
 input UpdateLessonInput {
   title: String
   slug: String
-  fullSlug: String
   description: String
   course: ID
   section: ID              # pass null to move lesson to root level

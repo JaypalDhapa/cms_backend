@@ -26,10 +26,9 @@ export async function getCourses(args) {
 
 export async function createCourseService(input) {
   try {
-    const payload = {
-      ...input,
-      category:input.categoryId,
-    }
+    const { categoryId, ...rest } = input;
+const payload = { ...rest, category: categoryId };
+
     return await createCourse(payload);
   } catch (err) {
     if (err.code === 11000) {
@@ -40,7 +39,12 @@ export async function createCourseService(input) {
 }
 
 export async function updateCourseService(id, input) {
-  const course = await updateCourse(id, input);
+  const { categoryId, ...rest } = input;
+  const payload = categoryId !== undefined
+    ? { ...rest, category: categoryId }
+    : rest;
+
+  const course = await updateCourse(id, payload);
   if (!course) throw new Error('Course not found or already deleted');
   return course;
 }

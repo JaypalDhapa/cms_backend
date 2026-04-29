@@ -20,7 +20,7 @@ const sectionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'Course',
-      index: true,
+     
     },
     // Fractional index string — ordered within its course
     order: {
@@ -30,19 +30,22 @@ const sectionSchema = new mongoose.Schema(
     isPublished: {
       type: Boolean,
       default: false,
-      index: true,
+      
     },
     isDeleted: {
       type: Boolean,
       default: false,
-      index: true,
+   
     },
   },
   { timestamps: true }
 );
 
-// Unique slug per course
-sectionSchema.index({ course: 1, slug: 1 }, { unique: true });
+// Unique slug per course (only among non-deleted sections)
+sectionSchema.index(
+  { course: 1, slug: 1 },
+  { unique: true, partialFilterExpression: { isDeleted: { $eq: false } } }
+);
 
 // Fast ordering within a course
 sectionSchema.index({ course: 1, isDeleted: 1, order: 1 });

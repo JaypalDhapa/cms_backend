@@ -41,7 +41,7 @@ const lessonSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Section',
       default: null,
-      index: true,
+
     },
     type: {
       type: String,
@@ -59,7 +59,7 @@ const lessonSchema = new mongoose.Schema(
     isPublished: {
       type: Boolean,
       default: false,
-      index: true,
+    
     },
     publishedAt: {
       type: Date,
@@ -68,7 +68,7 @@ const lessonSchema = new mongoose.Schema(
     isDeleted: {
       type: Boolean,
       default: false,
-      index: true,
+     
     },
     meta: {
       title: {
