@@ -5,6 +5,7 @@
 //   3. Updated indexes
 
 import mongoose from 'mongoose';
+import { tutorialDB } from '../../config/connectDB.js';
 
 const courseSchema = new mongoose.Schema(
   {
@@ -51,5 +52,5 @@ const courseSchema = new mongoose.Schema(
 courseSchema.index({ category: 1, isDeleted: 1, order: 1 });
 courseSchema.index({ isPublished: 1, order: 1 });
 
-const Course = mongoose.model('Course', courseSchema);
+const Course = tutorialDB.model('Course', courseSchema);
 export default Course;

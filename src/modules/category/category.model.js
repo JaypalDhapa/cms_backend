@@ -1,6 +1,7 @@
 // src/modules/category/category.model.js
 
 import mongoose from 'mongoose';
+import { tutorialDB } from '../../config/connectDB.js';
 
 const categorySchema = new mongoose.Schema(
   {
@@ -39,5 +40,5 @@ const categorySchema = new mongoose.Schema(
 
 categorySchema.index({ isDeleted: 1, order: 1 });
 
-const Category = mongoose.model('Category', categorySchema);
+const Category = tutorialDB.model('Category', categorySchema);
 export default Category;

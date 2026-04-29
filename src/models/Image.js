@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { tutorialDB } from '../config/connectDB.js';
 
 const ImageSchema = new mongoose.Schema(
   {
@@ -27,5 +28,5 @@ const ImageSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Image = mongoose.model("Image",ImageSchema);
+const Image = tutorialDB.model("Image", ImageSchema);
 export default Image;

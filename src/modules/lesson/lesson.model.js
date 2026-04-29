@@ -6,6 +6,7 @@
 //   4. Updated indexes
 
 import mongoose from 'mongoose';
+import { tutorialDB } from '../../config/connectDB.js';
 
 const lessonSchema = new mongoose.Schema(
   {
@@ -112,5 +113,5 @@ lessonSchema.pre('findOneAndUpdate', function () {
   }
 });
 
-const Lesson = mongoose.model('Lesson', lessonSchema);
+const Lesson = tutorialDB.model('Lesson', lessonSchema);
 export default Lesson;

@@ -5,14 +5,13 @@ import cors from 'cors';
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import connectDB from "./config/connectDB.js";
 import { typeDefs } from "./graphql/schema.js";
 import { resolvers } from "./graphql/resolver.js";
 
 import imageRoutes from './routes/imageRoutes.js';
 
-//connectDB
-connectDB();
+
+
 
 
 const Server = new ApolloServer({

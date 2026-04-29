@@ -1,6 +1,7 @@
 // src/modules/section/section.model.js
 
 import mongoose from 'mongoose';
+import { tutorialDB } from '../../config/connectDB.js';
 
 const sectionSchema = new mongoose.Schema(
   {
@@ -50,5 +51,5 @@ sectionSchema.index(
 // Fast ordering within a course
 sectionSchema.index({ course: 1, isDeleted: 1, order: 1 });
 
-const Section = mongoose.model('Section', sectionSchema);
+const Section = tutorialDB.model('Section', sectionSchema);
 export default Section;
