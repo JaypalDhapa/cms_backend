@@ -1,0 +1,112 @@
+# src/modules/quiz/quiz.schema.graphql
+
+# ── Shared ────────────────────────────────────────────────────────────────────
+
+# Accepted answers for a single blank (used by fill_blank type)
+type BlankAnswer {
+  acceptedAnswers: [String!]!
+}
+
+# ── Quiz Question type ────────────────────────────────────────────────────────
+
+type QuizQuestion {
+  id: ID!
+  lessonId: ID!
+
+  # "mcq" | "multi_select" | "drag_drop" | "fill_blank"
+  type: String!
+
+  # The question text. For drag_drop and fill_blank, contains [blank] markers.
+  question: String!
+
+  # Explanation shown to the learner after submitting (all types)
+  explanation: String
+
+  # Used by: mcq, multi_select, drag_drop
+  # All chips/options shown to the learner
+  options: [String!]
+
+  # Used by: mcq  → single String
+  # Used by: multi_select, drag_drop → array of Strings
+  # Stored as JSON string to handle mixed types in GraphQL
+  correct: String
+
+  # Used by: fill_blank only
+  blanks: [BlankAnswer!]
+
+  # Local order within the lesson (gap-based, starts at 0)
+  order: Int!
+
+  createdAt: String
+  updatedAt: String
+}
+
+# ── Inputs ────────────────────────────────────────────────────────────────────
+
+input BlankAnswerInput {
+  acceptedAnswers: [String!]!
+}
+
+input CreateQuizQuestionInput {
+  lessonId: ID!
+  type: String!
+  question: String!
+  explanation: String
+  options: [String!]
+  correct: String       # JSON stringified — String for mcq, [String] for multi_select/drag_drop
+  blanks: [BlankAnswerInput!]
+  order: Int
+}
+
+input UpdateQuizQuestionInput {
+  type: String
+  question: String
+  explanation: String
+  options: [String!]
+  correct: String
+  blanks: [BlankAnswerInput!]
+  order: Int
+}
+
+input QuizFiltersInput {
+  lessonId: ID
+}
+
+# ── Pagination ────────────────────────────────────────────────────────────────
+
+type QuizQuestionEdge {
+  cursor: String!
+  node: QuizQuestion!
+}
+
+type QuizQuestionConnection {
+  edges: [QuizQuestionEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+# ── Queries ───────────────────────────────────────────────────────────────────
+
+type Query {
+  quizQuestion(id: ID!): QuizQuestion
+  quizQuestions(
+    filters: QuizFiltersInput
+    first: Int
+    after: String
+  ): QuizQuestionConnection!
+}
+
+# ── Mutations ─────────────────────────────────────────────────────────────────
+
+type Mutation {
+  createQuizQuestion(input: CreateQuizQuestionInput!): QuizQuestion!
+  updateQuizQuestion(id: ID!, input: UpdateQuizQuestionInput!): QuizQuestion!
+  deleteQuizQuestion(id: ID!): DeleteQuizQuestionPayload!
+  reorderQuizQuestion(id: ID!, order: Int!): QuizQuestion!
+}
+
+type DeleteQuizQuestionPayload {
+  success: Boolean!
+  message: String!
+  id: ID!
+}
