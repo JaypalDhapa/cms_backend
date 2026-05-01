@@ -40,6 +40,8 @@ type Post {
   isDeleted: Boolean!
   isPinned: Boolean!
   allowComments: Boolean!
+  categoryId: ID
+  category: BlogCategory
   tags: [String!]!
   engagement: PostEngagement!
   meta: PostMeta!
@@ -87,6 +89,7 @@ input CreatePostInput {
   allowComments: Boolean
   isPinned: Boolean
   isPublished: Boolean
+  categoryId: ID
   meta: PostMetaInput!
 }
 
@@ -104,6 +107,7 @@ input UpdatePostInput {
   allowComments: Boolean
   isPinned: Boolean
   isPublished: Boolean
+  categoryId: ID
   meta: PostMetaInput
 }
 
@@ -114,6 +118,7 @@ input PostFilterInput {
   isPinned: Boolean
   tags: [String]
   search: String
+  categoryId: ID
 }
 
 input PostPaginationInput {

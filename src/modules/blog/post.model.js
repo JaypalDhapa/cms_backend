@@ -61,6 +61,12 @@ const PostSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "BlogCategory",
+      default: null,
+      index: true,
+    },
     engagement: {
       likeCount: {
         type: Number,

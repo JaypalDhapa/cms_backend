@@ -16,6 +16,10 @@ function buildPostFilter(filters = {}) {
     filter.tags = { $in: filters.tags };
   }
 
+  if (filters.categoryId) {
+    filter.categoryId = filters.categoryId;
+  }
+
   if (filters.search) {
     filter.$or = [
       { title: { $regex: filters.search, $options: "i" } },

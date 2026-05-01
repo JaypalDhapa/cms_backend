@@ -1,0 +1,30 @@
+scalar DateTime
+
+type BlogCategory {
+  id: ID!
+  name: String!
+  slug: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input CreateCategoryInput {
+  name: String!
+  slug: String!
+}
+
+input UpdateCategoryInput {
+  name: String
+  slug: String
+}
+
+type Query {
+  categories: [BlogCategory!]!
+  category(id: ID, slug: String): BlogCategory
+}
+
+type Mutation {
+  createCategory(input: CreateCategoryInput!): BlogCategory!
+  updateCategory(id: ID!, input: UpdateCategoryInput!): BlogCategory!
+  deleteCategory(id: ID!): Boolean!
+}

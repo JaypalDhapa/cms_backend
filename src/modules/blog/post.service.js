@@ -13,6 +13,7 @@ import {
 } from "./post.repository.js";
 
 import { revalidateNextJs } from "../../utils/revalidate.js";
+import { calculateReadTime } from "../../utils/readTime.js";
 
 export async function getPost({ id, slug }) {
   const post = await findPost({ id, slug });
@@ -37,7 +38,10 @@ export async function getRecentPosts(limit = 5) {
 }
 
 export async function createPostService(input) {
-  const post = await createPost(input);
+  const post = await createPost({
+    ...input,
+    readTime: calculateReadTime(input.content),
+  });
 
   // optional Next.js revalidation
   // await revalidateNextJs({
@@ -54,6 +58,11 @@ export async function updatePostService(id, input) {
   // auto-set publish date when published from update
   if (input.isPublished === true) {
     extra.publishedAt = new Date();
+  }
+
+  // recalculate only if content changed
+  if (input.content) {
+    extra.readTime = calculateReadTime(input.content);
   }
 
   const post = await updatePost(id, {

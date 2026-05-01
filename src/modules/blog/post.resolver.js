@@ -10,6 +10,7 @@ import {
   pinPostService,
   unpinPostService,
 } from "./post.service.js";
+import { getCategory } from "../blogCategory/blogCategory.service.js";
 
 const postResolver = {
   Query: {
@@ -30,6 +31,11 @@ const postResolver = {
 
   Post: {
     id: (parent) => parent._id?.toString() ?? parent.id,
+    // only fetches category when frontend explicitly requests it
+    category: (parent) => {
+      if (!parent.categoryId) return null
+      return getCategory({ id: parent.categoryId.toString() })
+    },
   },
 };
 
