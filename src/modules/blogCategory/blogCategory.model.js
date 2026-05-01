@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import {blogDB} from '../../config/connectDB.js'
+
 
 const BlogCategorySchema = new mongoose.Schema(
   {
@@ -19,5 +21,5 @@ const BlogCategorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const BlogCategory = mongoose.model("BlogCategory", BlogCategorySchema);
+const BlogCategory = blogDB.model("BlogCategory", BlogCategorySchema);
 export default BlogCategory;

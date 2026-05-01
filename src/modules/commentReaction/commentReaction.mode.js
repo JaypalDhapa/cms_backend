@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import {blogDB} from '../../config/connectDB.js'
+
 
 const CommentReactionSchema = new mongoose.Schema(
   {
@@ -23,5 +25,5 @@ const CommentReactionSchema = new mongoose.Schema(
 // One reaction per user per comment
 CommentReactionSchema.index({ userId: 1, commentId: 1 }, { unique: true });
 
-const CommentReaction = mongoose.model("CommentReaction", CommentReactionSchema);
+const CommentReaction = blogDB.model("CommentReaction", CommentReactionSchema);
 export default CommentReaction;

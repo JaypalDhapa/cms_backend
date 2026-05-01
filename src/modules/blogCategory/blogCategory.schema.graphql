@@ -19,12 +19,12 @@ input UpdateCategoryInput {
 }
 
 type Query {
-  categories: [BlogCategory!]!
-  category(id: ID, slug: String): BlogCategory
+  blogCategories: [BlogCategory!]!
+  blogaCtegory(id: ID, slug: String): BlogCategory
 }
 
 type Mutation {
-  createCategory(input: CreateCategoryInput!): BlogCategory!
-  updateCategory(id: ID!, input: UpdateCategoryInput!): BlogCategory!
-  deleteCategory(id: ID!): Boolean!
+  createBlogCategory(input: CreateCategoryInput!): BlogCategory!
+  updateBlogCategory(id: ID!, input: UpdateCategoryInput!): BlogCategory!
+  deleteBlogCategory(id: ID!): Boolean!
 }

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {blogDB} from '../../config/connectDB.js'
 
 const PostSchema = new mongoose.Schema(
   {
@@ -98,5 +99,5 @@ const PostSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Post = mongoose.model("Post", PostSchema);
+const Post = blogDB.model("Post", PostSchema);
 export default Post;

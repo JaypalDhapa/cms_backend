@@ -8,14 +8,14 @@ import {
   
   const blogCategoryResolver = {
     Query: {
-      categories: () => getCategories(),
-      category: (_parent, { id, slug }) => getCategory({ id, slug }),
+      blogCategories: () => getCategories(),
+      blogaCtegory: (_parent, { id, slug }) => getCategory({ id, slug }),
     },
   
     Mutation: {
-      createCategory: (_parent, { input }) => createCategoryService(input),
-      updateCategory: (_parent, { id, input }) => updateCategoryService(id, input),
-      deleteCategory: (_parent, { id }) => deleteCategoryService(id),
+      createBlogCategory: (_parent, { input }) => createCategoryService(input),
+      updateBlogCategory: (_parent, { id, input }) => updateCategoryService(id, input),
+      deleteBlogCategory: (_parent, { id }) => deleteCategoryService(id),
     },
   
     BlogCategory: {

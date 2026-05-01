@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import {blogDB} from '../../config/connectDB.js'
+
 
 const CommentSchema = new mongoose.Schema(
   {
@@ -53,5 +55,5 @@ CommentSchema.index({ rootId: 1 });
 // Sorting
 CommentSchema.index({ createdAt: -1 });
 
-const Comment = mongoose.model("Comment", CommentSchema);
+const Comment = blogDB.model("Comment", CommentSchema);
 export default Comment;

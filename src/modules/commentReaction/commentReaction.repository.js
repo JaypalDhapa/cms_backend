@@ -1,4 +1,4 @@
-import CommentReaction from "./commentReaction.model.js";
+import CommentReaction from "./commentReaction.mode.js";
 import { incrementCommentEngagement } from "../comment/comment.repository.js";
 
 export async function findUserReactionOnComment(userId, commentId) {

@@ -2,7 +2,7 @@ import {
   findPost,
   findPosts,
   findPinnedPosts,
-  findRecentPosts,
+  // findRecentPosts,
   createPost,
   updatePost,
   softDeletePost,
@@ -33,9 +33,9 @@ export async function getPinnedPosts() {
   return findPinnedPosts();
 }
 
-export async function getRecentPosts(limit = 5) {
-  return findRecentPosts(limit);
-}
+// export async function getRecentPosts(limit = 5) {
+//   return findRecentPosts(limit);
+// }
 
 export async function createPostService(input) {
   const post = await createPost({
