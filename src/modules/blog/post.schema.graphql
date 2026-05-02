@@ -14,8 +14,8 @@ enum SortOrder {
 }
 
 type PostMeta {
-  title: String!
-  description: String!
+  title: String
+  description: String
   keywords: [String!]!
 }
 
@@ -28,11 +28,11 @@ type PostEngagement {
 type Post {
   id: ID!
   title: String!
-  slug: String!
+  slug: String
   fullSlug: String
   excerpt: String
-  content: String!
-  coverImage: String!
+  content: String
+  coverImage: String
   coverImageAlt: String
   readTime: Int!
   isPublished: Boolean!
@@ -44,7 +44,7 @@ type Post {
   category: BlogCategory
   tags: [String!]!
   engagement: PostEngagement!
-  meta: PostMeta!
+  meta: PostMeta
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -72,25 +72,25 @@ type PostConnection {
 # Inputs
 
 input PostMetaInput {
-  title: String!
-  description: String!
+  title: String
+  description: String
   keywords: [String!]
 }
 
 input CreatePostInput {
   title: String!
-  slug: String!
+  slug: String
   fullSlug: String
   excerpt: String
-  content: String!
-  coverImage: String!
+  content: String
+  coverImage: String
   coverImageAlt: String
   tags: [String!]
   allowComments: Boolean
   isPinned: Boolean
   isPublished: Boolean
   categoryId: ID
-  meta: PostMetaInput!
+  meta: PostMetaInput
 }
 
 # update

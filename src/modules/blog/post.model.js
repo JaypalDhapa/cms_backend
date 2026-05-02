@@ -5,15 +5,15 @@ const PostSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
+      required: true, // only this stays required — auto-save won't fire without title
       trim: true,
     },
     slug: {
       type: String,
-      required: true,
       lowercase: true,
       trim: true,
       unique: true,
+      sparse: true, // allows multiple docs with null/missing slug without unique conflict
     },
     fullSlug: {
       type: String,
@@ -26,11 +26,9 @@ const PostSchema = new mongoose.Schema(
     },
     content: {
       type: String,
-      required: true,
     },
     coverImage: {
       type: String,
-      required: true,
     },
     coverImageAlt: {
       type: String,
@@ -69,29 +67,17 @@ const PostSchema = new mongoose.Schema(
       index: true,
     },
     engagement: {
-      likeCount: {
-        type: Number,
-        default: 0,
-      },
-      dislikeCount: {
-        type: Number,
-        default: 0,
-      },
-      commentCount: {
-        type: Number,
-        default: 0,
-      },
+      likeCount: { type: Number, default: 0 },
+      dislikeCount: { type: Number, default: 0 },
+      commentCount: { type: Number, default: 0 },
     },
-
     meta: {
       title: {
         type: String,
-        required: true,
         trim: true,
       },
       description: {
         type: String,
-        required: true,
       },
       keywords: [String],
     },
